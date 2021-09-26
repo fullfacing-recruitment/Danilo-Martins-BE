@@ -20,17 +20,20 @@ const todoSchema = new mongoose.Schema({
 
     deadline: Number,  // the date will be an integer number representing the number of milliseconds ellapsed since midnight, January 1, 1970 UTC
     
+    // a field holding the creation date of the item. 
     created: {
         type: Number,  // date, in ms, when the item was created
         required: true
     },
 
+    // a field holding the last modification date of the item.
     lastModified: {
         type: Number, // date, in ms, when the item was last modified
         required: true
     },
+
     // a field that shows whether or not a to-do item has been completed
-    complete: {
+    completed: {
         type: Boolean,
         required: true,
         default: false

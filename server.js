@@ -17,9 +17,11 @@ require("./Controllers/toDoController")(app);
 
 // error handling middleware
 app.use(function(err, req, res, next){
-    console.log(err); // to see properties of message in our console
+    console.error("ERROR HAPPENED");
+    console.error(err); // to see properties of message in our console
     res.status(422).send({error: err.message});
 });
+
 
 // listen for requests
 app.listen(process.env.port || 4000, "localhost", function(){
