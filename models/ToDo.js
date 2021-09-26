@@ -29,6 +29,12 @@ const todoSchema = new mongoose.Schema({
         type: Number, // date, in ms, when the item was last modified
         required: true
     },
+    // a field that shows whether or not a to-do item has been completed
+    complete: {
+        type: Boolean,
+        required: true,
+        default: false
+    }
 });
 
 const ToDo = mongoose.model("ToDo", todoSchema);
