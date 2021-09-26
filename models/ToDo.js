@@ -7,6 +7,11 @@ const todoSchema = new mongoose.Schema({
         required: true
     },
 
+    description: {
+        type: String,
+        default: "",
+    },
+
     priority: {
         type: Number,
         enum: [0, 1, 2],  // lowest to highest priority
