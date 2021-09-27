@@ -4,9 +4,10 @@ const mongoose = require('mongoose');
 // set up express app
 const app = express();
 
-// connect to mongodb
-mongoose.connect('mongodb://localhost/ToDos', { useNewUrlParser: true, useUnifiedTopology: true}, ()=>console.log("Connected to database"));
 mongoose.Promise = global.Promise;
+
+// connect to mongodb
+mongoose.connect("mongodb+srv://admin:adminFF@cluster0.s777e.mongodb.net/ToDos?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true}, ()=>console.log("Connected to database"));
 
 //set up static files (html, css, images, videos...)
 app.use(express.static('public'));

@@ -1,3 +1,7 @@
+# **How to run**
+On the root folder, type `npm install` to install all the required node modules. When done, type `npm start`, to start the server on the local machine. A tool, such as POSTMAN, can be used to make GET, POST, PATCH and DELETE requests. For the last three, the body of the request is in JSON. For the GET request, URL parameters sort (the field to sort according to), order (1 for ascending and -1 for descending) and hide (to hide certain fields) must be used.
+
+
 # **Backend Assessment**
 
 ## SYNOPSIS

@@ -1,8 +1,8 @@
 const axios = require('axios');
-var dDay = (new Date(2021, 11, 2)).valueOf();  // get the date in ms since midnight, January 1, 1970 UTC
+var dDay = (new Date(2021, 10, 2)).valueOf();  // get the date in ms since midnight, January 1, 1970 UTC
 var created = (new Date()).valueOf();  // simulate that the todo item was created now
 var lastModified = (new Date()).valueOf();  // simulate that the todo item was created now
-const testing = "POST"
+const testing = "POST";
 // console.log(day);
 
 switch(testing){
@@ -10,9 +10,9 @@ switch(testing){
         axios
         .post("http://localhost:4000/todo", 
         {
-            item: "Go home",
+            item: "Go to school",
             deadline: dDay,
-            priority: 1
+            priority: 2
         })
         .then( res => {
             console.log(`statusCode: ${res.status}`);
@@ -27,11 +27,9 @@ switch(testing){
         axios
         .patch("http://localhost:4000/todo", 
         {
-            item: "Go to gym",
-            deadline: dDay,
-            created: created,
-            lastModified: lastModified,
-            priority: 1
+            item: "Cook",
+            field: "completed",
+            newValue: true
         })
         .then( res => {
             console.log(`statusCode: ${res.status}`);
