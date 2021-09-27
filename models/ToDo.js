@@ -14,21 +14,21 @@ const todoSchema = new mongoose.Schema({
 
     priority: {
         type: Number,
-        enum: [0, 1, 2],  // lowest to highest priority
+        enum: [0, 1, 2],  // allowed values, lowest to highest priority
         default: 0  // priority of a new item is low by default
     },
 
-    deadline: Number,  // the date will be an integer number representing the number of milliseconds ellapsed since midnight, January 1, 1970 UTC
+    deadline: Date,  // the date will be an integer number representing the number of milliseconds ellapsed since midnight, January 1, 1970 UTC
     
     // a field holding the creation date of the item. 
     created: {
-        type: Number,  // date, in ms, when the item was created
+        type: Date,  // date, in ms, when the item was created
         required: true
     },
 
     // a field holding the last modification date of the item.
     lastModified: {
-        type: Number, // date, in ms, when the item was last modified
+        type: Date, // date, in ms, when the item was last modified
         required: true
     },
 
