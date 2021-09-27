@@ -10,33 +10,46 @@ module.exports = app =>{
 
         let hide = [];  // a list of the fields to hide
 
-        // console.log(req.query.show);
-        if (typeof(req.query.show)!=="undefined") {
-            hide = JSON.parse(req.query.show);
+        // if there are fields to be hidden
+        if (typeof(req.query.hide) !== "undefined") {
+            hide = JSON.parse(req.query.hide);  // create a list of fields to hide
         }
 
         let projection = {_id: 0, __v: 0};  // hiding fields that are irrelevant to the user, by default
 
-        hide.forEach(prop => {projection[[prop]] = 0});
+        hide.forEach(prop => {projection[[prop]] = 0});  // hide additional fields specified by the URL parameters
 
-        // console.log(projection);
-
+        // for describing how the documents will be sorted
         let sortParameter = req.query.sort;  // should be either "priority" or "deadline"
         let order = req.query.order;  // ascending (1) or descending (-1)
 
         // the list of to-dos will be sorted according to created date, from most recent to oldest, by default
-        if(! (sortParameter && order)) {
+        if (! (sortParameter && order)) {
             sortParameter = "created";  
             order = -1;
         }
 
+        var page, limit;
 
-        ToDo.find({},  projection)
-            .sort({[sortParameter]: order})
-            .then(data => {
-                res.send(data);
-            })
-            .catch(next);
+        ToDo.count({}, (err, count) => { // find number of documents in the database
+            if (err) throw err;
+            page = 0;  // the page number, 0 by default
+            limit = count;  // by default, all documents will be returned
+
+            if (! (typeof(req.query.page) === "undefined" || typeof(req.query.limit) === "undefined")){
+                if (page*limit < count) {  // the skip value must be less than the total number of documents in the database
+                    page = parseInt(req.query.page);  // page number from the URL parameters
+                    limit = parseInt(req.query.limit);  // number of documents to return
+                }
+            }
+    
+            ToDo.find({}, projection, {skip: page*limit, limit: limit})
+                .sort({[sortParameter]: order})
+                .then(data => {
+                    res.send(data);
+                })
+                .catch(next);
+        });  
     });
 
     app.post('/todo', (req, res)=>{
@@ -47,8 +60,7 @@ module.exports = app =>{
             if (err) throw err;
             //refresing the page and with the new todos. 
             res.json({todos:data});
-        });
-        
+        });     
     });
 
     app.delete('/todo', (req, res)=>{
