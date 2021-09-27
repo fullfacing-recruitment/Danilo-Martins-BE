@@ -102,14 +102,19 @@ module.exports = app => {
 
     app.patch('/todo/:id', (req, res)=>{
         console.log("Making PATCH request");
-        const id = req.params.id;
 
-        const field = req.body.field;
-        if (field === "created" || field === "lastModified" || field === "_id")
-            throw "Cannot modify created date, last modified date and the _id";  // certain paramenters cannot be modified by the user
+        const body = req.body;
+        const props = Object.keys(body);
+
+        if (props.includes("created") || props.includes("_id")) {
+            // deleting properties that must not be modified
+            delete body.created;
+            delete body._id;
+            console.error("Creation date or _id cannot be modified");
+        }
 
         // when uptating an item, the lastModified date is automatically set to the current time
-        ToDo.findByIdAndUpdate(id, {[field]: req.body.newValue, lastModified: new Date()}, (err, doc)=>{
+        ToDo.findByIdAndUpdate(req.params.id, {...body, lastModified: new Date()}, {new: true},  (err, doc)=>{
             if (err) throw err;
             res.json({todos:doc});
         });
