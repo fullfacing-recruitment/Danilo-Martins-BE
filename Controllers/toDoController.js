@@ -3,6 +3,7 @@ const ToDo = require("../models/ToDo");
 // This is what is returned when todoController(app) is invoked
 module.exports = app => {
 
+    // GET
     app.get('/todo', (req, res, next)=>{
         console.log("Making GET request");
 
@@ -56,54 +57,59 @@ module.exports = app => {
         //#region Pagination
         var page, limit;
 
-        ToDo.count({}, (err, count) => { // find number of documents in the database
-            if (err) throw err;
-            page = 0;  // the page number, 0 by default
-            limit = count;  // by default, all documents will be returned
+        ToDo
+            .count()
+            .then(count => { // find number of documents in the database
+                // if (err) throw err;
+                page = 0;  // the page number, 0 by default
+                limit = count;  // by default, all documents will be returned
 
-            if (! (typeof(req.query.page) === "undefined" || typeof(req.query.limit) === "undefined")){
-                if (page * limit < count) {  // the skip value must be less than the total number of documents in the database
-                    page = parseInt(req.query.page);  // page number from the URL parameters
-                    limit = parseInt(req.query.limit);  // number of documents to return
+                if (! (typeof(req.query.page) === "undefined" || typeof(req.query.limit) === "undefined")){
+                    if (page * limit < count) {  // the skip value must be less than the total number of documents in the database
+                        page = parseInt(req.query.page);  // page number from the URL parameters
+                        limit = parseInt(req.query.limit);  // number of documents to return
+                    }
                 }
-            }
-            
-            // find the to-do items according to the filters, items to hide and pagination defined above
-            ToDo.find(filter, projection, {skip: page*limit, limit: limit})
-                .sort({[sortParameter]: order})  // sorting the items
-                .then(data => {
-                    res.send(data);
-                })
-                .catch(next);
-        });  
+                
+                // find the to-do items according to the filters, items to hide and pagination defined above
+                ToDo.find(filter, projection, {skip: page*limit, limit: limit})
+                    .sort({[sortParameter]: order})  // sorting the items
+                    .then(data => {
+                        res.send(data);
+                    });
+            })
+            .catch(next);
         //#endregion Pagination
     });
 
 
-    app.post('/todo', (req, res)=>{
+    // POST
+    app.post('/todo', (req, res, next)=>{
         console.log("Making POST request");
 
         const now = new Date();  // a variable holding the current date
-        ToDo({...req.body, created: now, lastModified: now}).save((err, data)=>{
-            if (err) throw err;
-
-            res.json({todos:data});
-        });     
+        ToDo({...req.body, created: now, lastModified: now})
+            .save()
+            .then(data => res.send(data))
+            .catch(next);    
     });
 
-
-    app.delete('/todo/:id', (req, res)=>{
+    
+    // DELETE
+    app.delete('/todo/:id', (req, res, next)=>{
         console.log("Making DELETE request");
-        const id = req.params.id;
 
-        ToDo.deleteOne({_id: id}, (err, data)=>{
-            if (err) throw err;
-            res.json({todos:data});
-        });
+        ToDo
+            .deleteOne({_id: req.params.id})
+            .then( data => {
+                res.json({todos:data});
+            })
+            .catch(next);
     });  
 
-    
-    app.patch('/todo/:id', (req, res)=>{
+
+    // PATCH
+    app.patch('/todo/:id', (req, res, next)=>{
         console.log("Making PATCH request");
 
         const body = req.body;
@@ -117,9 +123,11 @@ module.exports = app => {
         }
 
         // when uptating an item, the lastModified date is automatically set to the current time
-        ToDo.findByIdAndUpdate(req.params.id, {...body, lastModified: new Date()}, {new: true},  (err, doc)=>{
-            if (err) throw err;
-            res.json({todos:doc});
-        });
+        ToDo
+            .findByIdAndUpdate(req.params.id, {...body, lastModified: new Date()}, {new: true})
+            .then(doc => {
+                res.json({todos:doc});
+            })
+            .catch(next);
     });
 }

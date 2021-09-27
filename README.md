@@ -1,5 +1,7 @@
 # **How to run**
-On the root folder, type `npm install` to install all the required node modules. When done, type `npm start`, to start the server on the local machine. A tool, such as POSTMAN, can be used to make GET, POST, PATCH and DELETE requests. For the last three, the body of the request is in JSON. For the GET request, URL parameters sort (the field to sort according to), order (1 for ascending and -1 for descending) and hide (to hide certain fields) must be used.
+On the root folder, type `npm install` to install all the required node modules. When done, type `npm start`, to start the server on the local machine. A tool, such as POSTMAN, can be used to make GET, POST, PATCH and DELETE requests. For the last three, the body of the request is in JSON. For the GET request, URL parameters `sort` (the field to sort according to), `order` (1 for ascending and -1 for descending), `hide` (to hide certain fields) and `status` (for querying whether a to-do is complete, ovedue or on track) can be used.
+Alternatively, the `test` folder contains examples on how to perform the requests, and the response will be displayed on the terminal. From the root folder, run `npm ./test/<method name>`. If running `post.js`, an item name must be passed along (`npm run ./test/post Shopping`).
+Additionaly, `postMany.js`, from the same folder, allows for creating new items at once, by running `npm postMany` in a separate terminal, while the server is running on another terminal.
 
 
 # **Backend Assessment**

@@ -2,7 +2,7 @@ const axios = require('axios');
 
 const uri = "http://localhost:4000/todo";
 
-const itemName = "Fishing";
+const itemName = "Shower";
 
 // Getting the id of a particular valid item from the database
 axios
