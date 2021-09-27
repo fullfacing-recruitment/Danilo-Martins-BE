@@ -1,9 +1,7 @@
-const { urlencoded } = require("express");
-const express = require("express");
 const ToDo = require("../models/ToDo");
 
 // This is what is returned when todoController(app) is invoked
-module.exports = app =>{
+module.exports = app => {
 
     app.get('/todo', (req, res, next)=>{
         console.log("Making GET request");
@@ -29,6 +27,23 @@ module.exports = app =>{
             order = -1;
         }
 
+        let filter = {}
+        const status = req.query.status;
+        // the status of a to-do can either be "completed", "overdue" or "on track" (not completed and not overdue)
+        if (status !== "undefined"){
+           switch (status){
+               case "completed":
+                   filter.completed = true;
+                   break;
+                case "overdue":
+                    filter = {...filter, completed: false, deadline: {$lt: (new Date()).valueOf()}};
+                    break;
+                case "on track":
+                    filter = {...filter, completed: false};
+
+           }
+        }
+
         var page, limit;
 
         ToDo.count({}, (err, count) => { // find number of documents in the database
@@ -43,7 +58,7 @@ module.exports = app =>{
                 }
             }
     
-            ToDo.find({}, projection, {skip: page*limit, limit: limit})
+            ToDo.find(filter, projection, {skip: page*limit, limit: limit})
                 .sort({[sortParameter]: order})
                 .then(data => {
                     res.send(data);
@@ -55,34 +70,36 @@ module.exports = app =>{
     app.post('/todo', (req, res)=>{
         console.log("Making POST request");
 
-        const now = (new Date()).valueOf();
+        const now = new Date();  // a variable holding the current date
         ToDo({...req.body, created: now, lastModified: now}).save((err, data)=>{
             if (err) throw err;
-            //refresing the page and with the new todos. 
+
             res.json({todos:data});
         });     
     });
 
-    app.delete('/todo', (req, res)=>{
+    app.delete('/todo/:id', (req, res)=>{
         console.log("Making DELETE request");
-        ToDo.deleteOne({item: req.body.item}, (err, data)=>{
+        const id = req.params.id;
+
+        ToDo.deleteOne({_id: id}, (err, data)=>{
             if (err) throw err;
             res.json({todos:data});
         });
     });  
 
-    app.patch('/todo', (req, res)=>{
+    app.patch('/todo/:id', (req, res)=>{
         console.log("Making PATCH request");
+        const id = req.params.id;
+
         const field = req.body.field;
         if (field === "created" || field === "lastModified" || field === "_id")
             throw "Cannot modify created date, last modified date and the _id";  // certain paramenters cannot be modified by the user
 
         // when uptating an item, the lastModified date is automatically set to the current time
-        ToDo.findOne({item: req.body.item})
-            .updateOne({[field]: req.body.newValue, lastModified:( new Date()).valueOf()}, (err, data)=>{
-                if (err) throw err;
-                res.json({todos:data});
-            });
+        ToDo.findByIdAndUpdate(id, {[field]: req.body.newValue, lastModified: new Date()}, (err, doc)=>{
+            if (err) throw err;
+            res.json({todos:doc});
+        });
     });
-
 }
