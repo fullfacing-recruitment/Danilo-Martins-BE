@@ -6,29 +6,35 @@ module.exports = app => {
     app.get('/todo', (req, res, next)=>{
         console.log("Making GET request");
 
+        //#region Fields to display
         let hide = [];  // a list of the fields to hide
 
-        // if there are fields to be hidden
-        if (typeof(req.query.hide) !== "undefined") {
+        if (typeof(req.query.hide) !== "undefined") // if there are fields to be hidden
             hide = JSON.parse(req.query.hide);  // create a list of fields to hide
-        }
 
-        let projection = {_id: 0, __v: 0};  // hiding fields that are irrelevant to the user, by default
+        let projection = {__v: 0};  // hiding fields that are irrelevant to the user, by default
 
         hide.forEach(prop => {projection[[prop]] = 0});  // hide additional fields specified by the URL parameters
+        //#endregion Fields to display
 
+
+        //#region Sorting
         // for describing how the documents will be sorted
         let sortParameter = req.query.sort;  // should be either "priority" or "deadline"
         let order = req.query.order;  // ascending (1) or descending (-1)
 
-        // the list of to-dos will be sorted according to created date, from most recent to oldest, by default
+        // by default, the list of to-dos will be sorted according to created date, from most recent to oldest
         if (! (sortParameter && order)) {
             sortParameter = "created";  
             order = -1;
         }
+        //#endregion Sorting
 
-        let filter = {}
+
+        //#region Filtering by status
+        let filter = {}  // the documents will be retrieved according to this filter
         const status = req.query.status;
+
         // the status of a to-do can either be "completed", "overdue" or "on track" (not completed and not overdue)
         if (status !== "undefined"){
            switch (status){
@@ -36,14 +42,18 @@ module.exports = app => {
                    filter.completed = true;
                    break;
                 case "overdue":
-                    filter = {...filter, completed: false, deadline: {$lt: (new Date()).valueOf()}};
+                    // overdue items are not complete and their deadlines have passed the current date
+                    filter = { ...filter, completed: false, deadline: {$lt: new Date()} };  
                     break;
                 case "on track":
-                    filter = {...filter, completed: false};
-
+                    // overdue items are not complete and their deadlines have not passed the current date
+                    filter = {...filter, completed: false, deadline: {$gte: new Date()} };
            }
         }
+        //#endregion Filtering by status
 
+
+        //#region Pagination
         var page, limit;
 
         ToDo.count({}, (err, count) => { // find number of documents in the database
@@ -52,19 +62,21 @@ module.exports = app => {
             limit = count;  // by default, all documents will be returned
 
             if (! (typeof(req.query.page) === "undefined" || typeof(req.query.limit) === "undefined")){
-                if (page*limit < count) {  // the skip value must be less than the total number of documents in the database
+                if (page * limit < count) {  // the skip value must be less than the total number of documents in the database
                     page = parseInt(req.query.page);  // page number from the URL parameters
                     limit = parseInt(req.query.limit);  // number of documents to return
                 }
             }
-    
+            
+            // find the to-do items according to the filters, items to hide and pagination defined above
             ToDo.find(filter, projection, {skip: page*limit, limit: limit})
-                .sort({[sortParameter]: order})
+                .sort({[sortParameter]: order})  // sorting the items
                 .then(data => {
                     res.send(data);
                 })
                 .catch(next);
         });  
+        //#endregion Pagination
     });
 
     app.post('/todo', (req, res)=>{
