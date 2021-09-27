@@ -8,10 +8,8 @@ const month = Math.round(Math.random()*12);
 const year = 2021;
 
 var dueDate = new Date(year, month, day);  // deadline
-// var created = new Date();  // simulate that the todo item was created now
-// var lastModified = new Date();  // simulate that the todo item was created now
 
-var itemName = "Fishing";
+var itemName = process.argv[2];
 var priority = Math.round(Math.random()*2)
 
 axios

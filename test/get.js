@@ -3,7 +3,7 @@ const axios = require('axios');
 const uri = "http://localhost:4000/todo";
 
 // parameters to help with sorting the to-do list
-const sort = "priority";  // can also be ""(or commented out, for sorting from newest to oldest) or "deadline"
+const sort = "";  // can be priority, ""(or commented out, for sorting from newest to oldest) or "deadline"
 const order = 1;  // 1 for ascending order, -1 for descending or commented out, for sorting from newest to oldest
 
 // fields to hide
