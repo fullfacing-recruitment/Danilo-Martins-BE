@@ -79,6 +79,7 @@ module.exports = app => {
         //#endregion Pagination
     });
 
+
     app.post('/todo', (req, res)=>{
         console.log("Making POST request");
 
@@ -90,6 +91,7 @@ module.exports = app => {
         });     
     });
 
+
     app.delete('/todo/:id', (req, res)=>{
         console.log("Making DELETE request");
         const id = req.params.id;
@@ -100,6 +102,7 @@ module.exports = app => {
         });
     });  
 
+    
     app.patch('/todo/:id', (req, res)=>{
         console.log("Making PATCH request");
 
