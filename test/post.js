@@ -11,7 +11,7 @@ var dueDate = new Date(year, month, day);  // deadline
 // var created = new Date();  // simulate that the todo item was created now
 // var lastModified = new Date();  // simulate that the todo item was created now
 
-var itemName = "Sleep";
+var itemName = "Fishing";
 var priority = Math.round(Math.random()*2)
 
 axios
