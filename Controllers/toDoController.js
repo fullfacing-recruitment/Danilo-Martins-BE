@@ -58,7 +58,7 @@ module.exports = app => {
         var page, limit;
 
         ToDo
-            .count()
+            .count({})
             .then(count => { // find number of documents in the database
                 // if (err) throw err;
                 page = 0;  // the page number, 0 by default

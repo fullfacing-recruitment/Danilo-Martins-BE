@@ -9,12 +9,13 @@ const year = 2023;  // all patched documents will be due in 2023, for testing
 
 var dueDate = new Date(year, month, day);  // deadline
 
+const itemName = 'swimming';
 
 // Getting the id of a particular valid item from the database
 axios
     .get(uri)
     .then(res => {
-        const id = res.data.filter(obj => obj.item === "Fishing")[0]._id;
+        const id = res.data.filter(obj => obj.item === itemName)[0]._id;
 
         // modifing the item found
         axios

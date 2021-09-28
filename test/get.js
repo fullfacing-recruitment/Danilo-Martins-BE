@@ -12,7 +12,11 @@ const hide = []; // the following fields can be hidden: "priority", "_id", "crea
 // query by status
 const status = ""; // can also be "overdue", "completed" and "on track"
 
-let payload = {sort: sort, order: order, hide: JSON.stringify(hide), status: status};
+// pagination parameters
+const page = 1;  // page number
+const limit = 4;  // maximum number of elements to return
+
+let payload = {sort: sort, order: order, hide: JSON.stringify(hide), status: status, page: page, limit: limit};
 const params = new URLSearchParams(payload);
 
 
