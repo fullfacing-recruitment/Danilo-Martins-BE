@@ -1,0 +1,27 @@
+{
+  "name": "danilo-martins-be",
+  "version": "1.0.0",
+  "description": "To-Do list using RESTful HTTP API",
+  "main": "server.js",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "express": "^4.17.1",
+    "mongoose": "^6.0.7"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fullfacing-recruitment/Danilo-Martins-BE.git"
+  },
+  "keywords": [
+    "To-do"
+  ],
+  "author": "Danilo Martins",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fullfacing-recruitment/Danilo-Martins-BE/issues"
+  },
+  "homepage": "https://github.com/fullfacing-recruitment/Danilo-Martins-BE#readme"
+}
